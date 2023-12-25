@@ -251,7 +251,7 @@ export default {
     // 处理订单点击事件
     handleOrderClick(row) {
       console.log(row);
-      axios.get('/orderDetails/getById', {
+      axios.get('/orderDetail/getById', {
         params: {
           id: row.orderId
         }
@@ -289,7 +289,7 @@ export default {
         startTime: this.transactionPagination.startTime,
         endTime: this.transactionPagination.endTime,
       }
-      axios.get("/api/order/getStatistics", { statisticsQuery: pageInfo })
+      axios.get("/api/orderDetail/getStatistics", { statisticsQuery: pageInfo })
       .then(res => {
         console.log("Response data:", res.data);
         this.transactionList = res.data.data.list;
