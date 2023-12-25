@@ -251,11 +251,7 @@ export default {
     // 处理订单点击事件
     handleOrderClick(row) {
       console.log(row);
-      axios.get('/orderDetail/getById', {
-        params: {
-          id: row.orderId
-        }
-      })
+      axios.get(`/api/orderDetail/getById/${row.orderId}`)
       .then(response => {
         console.log(response.data);
         this.orderDetailInfo = response.data.data;
