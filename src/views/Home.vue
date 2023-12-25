@@ -164,8 +164,8 @@ export default {
     return {
       currentTag: 0,
       productList:[], // 商品列表
-      orderList:[{orderId:1,customerName:'hahah',orderDate:'2023-12-23',paymentDate:'11', paymentMethod:'22'}], // 销售列表
-      orderDetailInfo:[{orderDetailId:1,orderId:1,productId:1,productName:'hahah',quantity:1,unitPrice:1,sumPrice:1}], // 订单详情
+      orderList:[], // 销售列表
+      orderDetailInfo:[], // 订单详情
       showOrderDetails: false, // 是否显示订单详情
       transactionList:[], // 交易流水列表
 
@@ -185,8 +185,8 @@ export default {
         pageSize:10,
         total:0, 
         customerName: "", 
-        startTime: "",
-        endTime: "",
+        startTime: new Date("2000-01-01"),
+        endTime: new Date("2023-12-25"),
       },
 
       // 交易流水分页数据
@@ -195,8 +195,8 @@ export default {
         pageSize:10,
         total:0, 
         productName: "", 
-        startTime: "",
-        endTime: "",
+        startTime: new Date("2000-01-01"),
+        endTime: new Date("2023-12-25"),
       }
     };
   },
@@ -227,6 +227,13 @@ export default {
       });
     },
 
+    // 处理商品信息分页
+    handleProductPageChange(page) {
+      this.productPagination.currentPage = page;
+      console.log(this.productPagination);
+      this.getProductList();
+    },
+
     // 获取所有订单信息
     getOrderList() {
       const pageInfo = 
@@ -234,10 +241,11 @@ export default {
         pageNo: this.orderPagination.currentPage,
         pageSize: this.orderPagination.pageSize,
         customerName: this.orderPagination.customerName,
-        startTime: this.orderPagination.startTime,
-        endTime: this.orderPagination.endTime,
+        startTime: this.orderPagination.startTime.toISOString().slice(0, 10),
+        endTime: this.orderPagination.endTime.toISOString().slice(0, 10),
       }
-      axios.get("/api/order/get", { orderQuery: pageInfo })
+      console.log("order:",pageInfo);
+      axios.get("/api/order/get", { params: pageInfo })
       .then(res => {
         console.log("Response data:", res.data);
         this.orderList = res.data.data.list;
@@ -266,13 +274,8 @@ export default {
     // 处理订单信息分页
     handleOrderPageChange(page) {
       this.orderPagination.currentPage = page;
+      console.log(this.orderPagination);
       this.getOrderList();
-    },
-
-    // 处理商品信息分页
-    handleProductPageChange(page) {
-      this.productPagination.currentPage = page;
-      this.getProductList();
     },
 
     // 获取所有交易流水信息
@@ -282,10 +285,10 @@ export default {
         pageNo: this.transactionPagination.currentPage,
         pageSize: this.transactionPagination.pageSize,
         productName: this.transactionPagination.productName,
-        startTime: this.transactionPagination.startTime,
-        endTime: this.transactionPagination.endTime,
+        startTime: this.orderPagination.startTime.toISOString().slice(0, 10),
+        endTime: this.orderPagination.endTime.toISOString().slice(0, 10),
       }
-      axios.get("/api/orderDetail/getStatistics", { statisticsQuery: pageInfo })
+      axios.get("/api/orderDetail/getStatistics", { params: pageInfo })
       .then(res => {
         console.log("Response data:", res.data);
         this.transactionList = res.data.data.list;
@@ -299,6 +302,7 @@ export default {
     // 处理交易流水分页
     handleTransactionPageChange(page) {
       this.transactionPagination.currentPage = page;
+      console.log(this.transactionPagination);
       this.getTransactionList();
     }
   }
